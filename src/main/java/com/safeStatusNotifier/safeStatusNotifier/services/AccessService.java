@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccessService {
-    AccessResponse denyAccessRequest(String requestId);
-    AccessResponse approveAccessRequest(String requestId);
+    AccessResponse denyAccessRequest(UUID requestId);
+    AccessResponse approveAccessRequest(UUID requestId);
     AccessResponse grantAccess(GrantAccessRequest request);
     List<AccessRelationshipDto> getAccessRequests();
     List<UserDto> getMonitoredUsers();
