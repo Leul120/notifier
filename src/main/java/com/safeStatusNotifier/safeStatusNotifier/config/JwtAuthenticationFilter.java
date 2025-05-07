@@ -22,17 +22,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    public  JwtService jwtService;
-    private  UserService userService;
+    public final JwtService jwtService;
+    private final UserService userService;
 
-//    @Autowired
-//    public JwtAuthenticationFilter(UserService userService,JwtService jwtService,UserRepository userRepository){
-//        this.jwtService=jwtService;
-//        this.userRepository=userRepository;
-//        this.userService=userService;
-//    }
+    @Autowired
+    public JwtAuthenticationFilter(UserService userService,JwtService jwtService){
+        this.jwtService=jwtService;
+
+        this.userService=userService;
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader=request.getHeader("Authorization");
