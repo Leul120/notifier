@@ -40,7 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .collect(Collectors.toList());
     }
     @Override
-    public List<StatusNotificationDto> getNotificationsForUser(String userId) {
+    public List<StatusNotificationDto> getNotificationsForUser(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -72,7 +72,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private StatusNotificationDto mapToDto(StatusNotification notification) {
         StatusNotificationDto dto = new StatusNotificationDto();
-        dto.setId(notification.getId());
+        dto.setId(notification.getId().toString());
         dto.setUserId(notification.getUser().getId());
         dto.setTitle(notification.getTitle());
         dto.setMessage(notification.getMessage());
