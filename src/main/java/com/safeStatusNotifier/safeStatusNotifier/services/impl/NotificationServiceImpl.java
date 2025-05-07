@@ -73,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
     private StatusNotificationDto mapToDto(StatusNotification notification) {
         StatusNotificationDto dto = new StatusNotificationDto();
         dto.setId(notification.getId().toString());
-        dto.setUserId(notification.getUser().getId());
+        dto.setUserId(notification.getUser().getId().toString());
         dto.setTitle(notification.getTitle());
         dto.setMessage(notification.getMessage());
         dto.setType(notification.getType());
