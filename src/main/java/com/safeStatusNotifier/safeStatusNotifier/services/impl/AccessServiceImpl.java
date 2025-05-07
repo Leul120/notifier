@@ -111,7 +111,7 @@ public class AccessServiceImpl implements AccessService {
         );
     }
     @Override
-    public AccessResponse approveAccessRequest(String requestId) {
+    public AccessResponse approveAccessRequest(UUID requestId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -142,7 +142,7 @@ public class AccessServiceImpl implements AccessService {
         );
     }
     @Override
-    public AccessResponse denyAccessRequest(String requestId) {
+    public AccessResponse denyAccessRequest(UUID requestId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -212,7 +212,7 @@ public class AccessServiceImpl implements AccessService {
 
     private AccessRelationshipDto mapToDto(AccessRelationship relationship) {
         AccessRelationshipDto dto = new AccessRelationshipDto();
-        dto.setId(relationship.getId());
+        dto.setId(relationship.getId().toString());
         dto.setRequesterId(relationship.getRequester().getId());
         dto.setRequesterName(relationship.getRequester().getName());
         dto.setRequesterEmail(relationship.getRequester().getEmail());
