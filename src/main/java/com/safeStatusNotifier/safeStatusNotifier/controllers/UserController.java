@@ -30,7 +30,7 @@ public class UserController {
         }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable UUID userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
     }
