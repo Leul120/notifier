@@ -33,7 +33,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         this.notificationService = notificationService;
     }
     @Override
-    public DeviceStatusDto getUserDeviceStatus(UUID userId) {
+    public DeviceStatusDto getUserDeviceStatus(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
