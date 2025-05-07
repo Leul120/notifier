@@ -59,8 +59,8 @@ public class UserServiceImpl implements UserService {
         return mapToUserDto(user);
     }
     @Override
-    public UserDto getUserById(UUID userId) {
-        User user = userRepository.findById(userId)
+    public UserDto getUserById(String  userId) {
+        User user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return mapToUserDto(user);
