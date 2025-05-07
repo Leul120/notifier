@@ -203,7 +203,7 @@ public class AccessServiceImpl implements AccessService {
 
     private UserDto mapUserToDto(User user) {
         UserDto dto = new UserDto();
-        dto.setId(user.getId());
+        dto.setId(user.getId().toString());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
@@ -213,10 +213,10 @@ public class AccessServiceImpl implements AccessService {
     private AccessRelationshipDto mapToDto(AccessRelationship relationship) {
         AccessRelationshipDto dto = new AccessRelationshipDto();
         dto.setId(relationship.getId().toString());
-        dto.setRequesterId(relationship.getRequester().getId());
+        dto.setRequesterId(relationship.getRequester().getId().toString());
         dto.setRequesterName(relationship.getRequester().getName());
         dto.setRequesterEmail(relationship.getRequester().getEmail());
-        dto.setTargetId(relationship.getTarget().getId());
+        dto.setTargetId(relationship.getTarget().getId().toString());
         dto.setTargetName(relationship.getTarget().getName());
         dto.setTargetEmail(relationship.getTarget().getEmail());
         dto.setStatus(relationship.getStatus());
