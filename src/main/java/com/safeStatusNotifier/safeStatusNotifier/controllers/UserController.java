@@ -18,10 +18,10 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     
 
-        private  UserService userService;
+        private final UserService userService;
 
         // Grant access from a user to a parent
         @GetMapping("/me")
