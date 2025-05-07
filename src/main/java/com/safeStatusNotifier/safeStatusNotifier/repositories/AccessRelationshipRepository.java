@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface AccessRelationshipRepository extends JpaRepository<AccessRelationship, String> {
+public interface AccessRelationshipRepository extends JpaRepository<AccessRelationship, UUID> {
     List<AccessRelationship> findByTargetAndStatus(User target, AccessRelationship.AccessStatus status);
     List<AccessRelationship> findByRequesterAndStatus(User requester, AccessRelationship.AccessStatus status);
     Optional<AccessRelationship> findByRequesterAndTarget(User requester, User target);
