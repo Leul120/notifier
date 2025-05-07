@@ -12,7 +12,7 @@ public interface UserService {
     UserDetailsService userDetailsService();
     void deleteUser(UUID id);
     UserDto getCurrentUser();
-    UserDto getUserById(String  userId);
+    UserDto getUserById(UUID userId);
 
 
 }
