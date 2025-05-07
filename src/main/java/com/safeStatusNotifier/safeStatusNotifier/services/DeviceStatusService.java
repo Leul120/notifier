@@ -8,6 +8,6 @@ import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusUpdateRequ
 import java.util.UUID;
 
 public interface DeviceStatusService {
-    DeviceStatusDto getUserDeviceStatus(UUID userId);
+    DeviceStatusDto getUserDeviceStatus(String userId);
     DeviceStatusDto updateDeviceStatus(DeviceStatusUpdateRequest request);
 }
