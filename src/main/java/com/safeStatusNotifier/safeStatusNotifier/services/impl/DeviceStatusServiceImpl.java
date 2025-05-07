@@ -87,7 +87,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     private DeviceStatusDto mapToDto(DeviceStatus status) {
         DeviceStatusDto dto = new DeviceStatusDto();
-        dto.setUserId(status.getUser().getId());
+        dto.setUserId(status.getUser().getId().toString());
         dto.setOnline(status.isOnline());
         dto.setBatteryLevel(status.getBatteryLevel());
         dto.setNetworkType(status.getNetworkType());
