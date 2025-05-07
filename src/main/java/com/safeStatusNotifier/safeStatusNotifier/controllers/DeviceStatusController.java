@@ -19,7 +19,7 @@ public class DeviceStatusController {
     }
 
     @GetMapping("/users/{userId}/device-status")
-    public ResponseEntity<DeviceStatusDto> getUserDeviceStatus(@PathVariable String userId) {
+    public ResponseEntity<DeviceStatusDto> getUserDeviceStatus(@PathVariable UUID userId) {
         return ResponseEntity.ok(deviceStatusService.getUserDeviceStatus(userId));
     }
 
