@@ -43,12 +43,12 @@ public class AccessController {
     }
 
     @PostMapping("/requests/{requestId}/approve")
-    public ResponseEntity<AccessResponse> approveAccessRequest(@PathVariable String requestId) {
+    public ResponseEntity<AccessResponse> approveAccessRequest(@PathVariable UUID requestId) {
         return ResponseEntity.ok(accessService.approveAccessRequest(requestId));
     }
 
     @PostMapping("/requests/{requestId}/deny")
-    public ResponseEntity<AccessResponse> denyAccessRequest(@PathVariable String requestId) {
+    public ResponseEntity<AccessResponse> denyAccessRequest(@PathVariable UUID requestId) {
         return ResponseEntity.ok(accessService.denyAccessRequest(requestId));
     }
 
