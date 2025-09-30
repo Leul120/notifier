@@ -32,6 +32,11 @@ private final AuthenticationService authenticationService;
             return ResponseEntity.ok(authenticationService.signIn(signInRequest));
 
     }
+    @GetMapping
+    public ResponseEntity<String> test(){
+        return ResponseEntity.ok("working");
+
+    }
 
 
 
