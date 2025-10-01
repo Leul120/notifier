@@ -1,0 +1,24 @@
+
+type DeviceStatus {
+    id: ID!
+    user: User
+    isOnline: Boolean
+    batteryLevel: Int
+    networkType: String
+    lastSeen: LocalDateTime
+}
+
+input DeviceStatusUpdateRequest {
+    isOnline: Boolean!
+    batteryLevel: Int!
+    networkType: String!
+}
+
+extend type Query {
+    getUserDeviceStatus(userId: ID!): DeviceStatus
+}
+
+extend type Mutation {
+    updateDeviceStatus(input: DeviceStatusUpdateRequest): DeviceStatus
+}
+

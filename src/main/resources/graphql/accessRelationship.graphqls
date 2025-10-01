@@ -1,0 +1,33 @@
+scalar LocalDateTime
+type AccessRelationship {
+    id: ID!
+    requester: User
+    target: User
+    status: AccessStatus
+    createdAt: LocalDateTime
+}
+
+enum AccessStatus {
+    PENDING
+    APPROVED
+    DENIED
+}
+
+input GrantAccessRequest {
+    email: String!
+}
+
+
+
+extend type Query {
+    usersMonitoringMe: [User]
+    monitoredUsers: [User]
+    accessRequests: [AccessRelationship]
+}
+
+extend type Mutation {
+    grantAccess(input: GrantAccessRequest): AccessRelationship
+    approveAccessRequest(id:ID!): AccessRelationship
+    denyAccessRequest(id:ID!): AccessRelationship
+    revokeAccess(id:ID!): Boolean
+}

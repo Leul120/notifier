@@ -1,0 +1,21 @@
+type JwtAuthenticationResponse {
+    user: User!
+    accessToken: String!
+}
+
+input SignUpRequest {
+    name: String!
+    email: String!
+    password: String!
+    phone: Int
+}
+
+input SignInRequest {
+    email: String!
+    password: String!
+}
+
+extend type Mutation {
+    signup(input: SignUpRequest!): JwtAuthenticationResponse
+    signin(input: SignInRequest!): JwtAuthenticationResponse
+}

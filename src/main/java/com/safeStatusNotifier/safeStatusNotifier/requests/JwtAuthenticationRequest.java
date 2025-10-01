@@ -1,5 +1,6 @@
 package com.safeStatusNotifier.safeStatusNotifier.requests;
 
+import com.safeStatusNotifier.safeStatusNotifier.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;

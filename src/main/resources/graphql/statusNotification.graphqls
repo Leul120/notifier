@@ -1,0 +1,29 @@
+
+type StatusNotification{
+id:ID!
+user:User
+title:String!
+message:String
+type:NotificationType
+timeStamp:LocalDateTime
+read:Boolean
+}
+
+
+enum NotificationType{
+INFO, SUCCESS, WARNING, ERROR
+}
+input StatusNotificationDto {
+    userId: ID!
+    title: String!
+    message: String
+    type: NotificationType!
+}
+
+extend type Query {
+    notificationsForCurrentUser: [StatusNotification]
+    notificationsForUser(userId: ID!): [StatusNotification]
+}
+type Mutation {
+    createNotification(input: StatusNotificationDto): StatusNotification
+}

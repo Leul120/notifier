@@ -51,29 +51,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getCurrentUser() {
+    public User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
+       return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return mapToUserDto(user);
+
     }
     @Override
-    public UserDto getUserById(UUID  userId) {
-        User user = userRepository.findById(userId)
+    public User getUserById(UUID  userId) {
+       return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return mapToUserDto(user);
+
     }
 
-    private UserDto mapToUserDto(User user) {
-        UserDto dto = new UserDto();
-        dto.setId(user.getId().toString());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        return dto;
-    }
+//    private UserDto mapToUserDto(User user) {
+//        UserDto dto = new UserDto();
+//        dto.setId(user.getId().toString());
+//        dto.setName(user.getName());
+//        dto.setEmail(user.getEmail());
+//        dto.setPhone(user.getPhone());
+//        return dto;
+//    }
 
 }
 
