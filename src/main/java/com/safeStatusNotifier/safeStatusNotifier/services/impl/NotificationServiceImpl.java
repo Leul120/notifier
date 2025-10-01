@@ -28,19 +28,17 @@ public class NotificationServiceImpl implements NotificationService {
         this.userRepository = userRepository;
     }
     @Override
-    public List<StatusNotificationDto> getNotificationsForCurrentUser() {
+    public List<StatusNotification> getNotificationsForCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<StatusNotification> notifications = notificationRepository.findByUserOrderByTimestampDesc(user);
+        return notificationRepository.findByUserOrderByTimestampDesc(user);
 
-        return notifications.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+
     }
     @Override
-    public List<StatusNotificationDto> getNotificationsForUser(UUID userId) {
+    public List<StatusNotification> getNotificationsForUser(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -51,11 +49,8 @@ public class NotificationServiceImpl implements NotificationService {
 
         // This would need to be expanded with proper access control logic
 
-        List<StatusNotification> notifications = notificationRepository.findByUserOrderByTimestampDesc(user);
+        return notificationRepository.findByUserOrderByTimestampDesc(user);
 
-        return notifications.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
     }
     @Override
     public void createNotification(User user, String title, String message, StatusNotification.NotificationType type) {
@@ -70,16 +65,16 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
-    private StatusNotificationDto mapToDto(StatusNotification notification) {
-        StatusNotificationDto dto = new StatusNotificationDto();
-        dto.setId(notification.getId().toString());
-        dto.setUserId(notification.getUser().getId().toString());
-        dto.setTitle(notification.getTitle());
-        dto.setMessage(notification.getMessage());
-        dto.setType(notification.getType());
-        dto.setTimestamp(notification.getTimestamp().format(formatter));
-        dto.setRead(notification.isRead());
-        return dto;
-    }
+//    private StatusNotificationDto mapToDto(StatusNotification notification) {
+//        StatusNotificationDto dto = new StatusNotificationDto();
+//        dto.setId(notification.getId().toString());
+//        dto.setUserId(notification.getUser().getId().toString());
+//        dto.setTitle(notification.getTitle());
+//        dto.setMessage(notification.getMessage());
+//        dto.setType(notification.getType());
+//        dto.setTimestamp(notification.getTimestamp().format(formatter));
+//        dto.setRead(notification.isRead());
+//        return dto;
+//    }
 }
 

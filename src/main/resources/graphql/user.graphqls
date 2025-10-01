@@ -1,0 +1,13 @@
+type User{
+id:ID!
+name:String!
+email:String!
+password:String!
+phone:Int
+}
+
+
+ type Query{
+ getCurrentUser:User
+ getUserById(userId:ID!):User
+}

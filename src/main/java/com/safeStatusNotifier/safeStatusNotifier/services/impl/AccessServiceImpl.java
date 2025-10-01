@@ -36,7 +36,7 @@ public class AccessServiceImpl implements AccessService {
         this.notificationService = notificationService;
     }
     @Override
-    public List<UserDto> getUsersMonitoringMe() {
+    public List<User> getUsersMonitoringMe() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,11 +45,11 @@ public class AccessServiceImpl implements AccessService {
                 currentUser, AccessRelationship.AccessStatus.APPROVED);
 
         return relationships.stream()
-                .map(relationship -> mapUserToDto(relationship.getRequester()))
+                .map(AccessRelationship::getRequester)
                 .collect(Collectors.toList());
     }
     @Override
-    public List<UserDto> getMonitoredUsers() {
+    public List<User> getMonitoredUsers() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,23 +58,20 @@ public class AccessServiceImpl implements AccessService {
                 currentUser, AccessRelationship.AccessStatus.APPROVED);
 
         return relationships.stream()
-                .map(relationship -> mapUserToDto(relationship.getTarget()))
+                .map(AccessRelationship::getTarget)
                 .collect(Collectors.toList());
     }
     @Override
-    public List<AccessRelationshipDto> getAccessRequests() {
+    public List<AccessRelationship> getAccessRequests() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<AccessRelationship> relationships = accessRepository.findByTarget(currentUser);
+        return accessRepository.findByTarget(currentUser);
 
-        return relationships.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
     }
     @Override
-    public AccessResponse grantAccess(GrantAccessRequest request) {
+    public AccessRelationship grantAccess(GrantAccessRequest request) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Current user not found"));
@@ -82,7 +79,6 @@ public class AccessServiceImpl implements AccessService {
         User targetUser = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Target user not found"));
 
-        // Check if relationship already exists
         accessRepository.findByRequesterAndTarget(currentUser, targetUser)
                 .ifPresent(relationship -> {
                     throw new RuntimeException("Access relationship already exists");
@@ -94,7 +90,6 @@ public class AccessServiceImpl implements AccessService {
         relationship.setStatus(AccessRelationship.AccessStatus.PENDING);
         relationship.setCreatedAt(LocalDateTime.now());
 
-        AccessRelationship savedRelationship = accessRepository.save(relationship);
 
         // Create notification for target user
         notificationService.createNotification(
@@ -104,14 +99,10 @@ public class AccessServiceImpl implements AccessService {
                 StatusNotification.NotificationType.INFO
         );
 
-        return new AccessResponse(
-                true,
-                "Access request sent successfully",
-                mapToDto(savedRelationship)
-        );
+        return accessRepository.save(relationship);
     }
     @Override
-    public AccessResponse approveAccessRequest(UUID requestId) {
+    public AccessRelationship approveAccessRequest(UUID requestId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -125,7 +116,6 @@ public class AccessServiceImpl implements AccessService {
         }
 
         relationship.setStatus(AccessRelationship.AccessStatus.APPROVED);
-        AccessRelationship savedRelationship = accessRepository.save(relationship);
 
         // Create notification for requester
         notificationService.createNotification(
@@ -135,14 +125,10 @@ public class AccessServiceImpl implements AccessService {
                 StatusNotification.NotificationType.SUCCESS
         );
 
-        return new AccessResponse(
-                true,
-                "Access request approved successfully",
-                mapToDto(savedRelationship)
-        );
+        return accessRepository.save(relationship);
     }
     @Override
-    public AccessResponse denyAccessRequest(UUID requestId) {
+    public AccessRelationship denyAccessRequest(UUID requestId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -156,7 +142,6 @@ public class AccessServiceImpl implements AccessService {
         }
 
         relationship.setStatus(AccessRelationship.AccessStatus.DENIED);
-        AccessRelationship savedRelationship = accessRepository.save(relationship);
 
         // Create notification for requester
         notificationService.createNotification(
@@ -166,14 +151,10 @@ public class AccessServiceImpl implements AccessService {
                 StatusNotification.NotificationType.WARNING
         );
 
-        return new AccessResponse(
-                true,
-                "Access request denied successfully",
-                mapToDto(savedRelationship)
-        );
+        return accessRepository.save(relationship);
     }
     @Override
-    public AccessResponse revokeAccess(UUID userId) {
+    public AccessRelationship revokeAccess(UUID userId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Current user not found"));
@@ -194,33 +175,29 @@ public class AccessServiceImpl implements AccessService {
                 StatusNotification.NotificationType.WARNING
         );
 
-        return new AccessResponse(
-                true,
-                "Access revoked successfully",
-                null
-        );
+        return accessRepository.save(relationship);
     }
 
-    private UserDto mapUserToDto(User user) {
-        UserDto dto = new UserDto();
-        dto.setId(user.getId().toString());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        return dto;
-    }
+//    private UserDto mapUserToDto(User user) {
+//        UserDto dto = new UserDto();
+//        dto.setId(user.getId().toString());
+//        dto.setName(user.getName());
+//        dto.setEmail(user.getEmail());
+//        dto.setPhone(user.getPhone());
+//        return dto;
+//    }
 
-    private AccessRelationshipDto mapToDto(AccessRelationship relationship) {
-        AccessRelationshipDto dto = new AccessRelationshipDto();
-        dto.setId(relationship.getId().toString());
-        dto.setRequesterId(relationship.getRequester().getId().toString());
-        dto.setRequesterName(relationship.getRequester().getName());
-        dto.setRequesterEmail(relationship.getRequester().getEmail());
-        dto.setTargetId(relationship.getTarget().getId().toString());
-        dto.setTargetName(relationship.getTarget().getName());
-        dto.setTargetEmail(relationship.getTarget().getEmail());
-        dto.setStatus(relationship.getStatus());
-        dto.setCreatedAt(relationship.getCreatedAt().format(formatter));
-        return dto;
-    }
+//    private AccessRelationshipDto mapToDto(AccessRelationship relationship) {
+//        AccessRelationshipDto dto = new AccessRelationshipDto();
+//        dto.setId(relationship.getId().toString());
+//        dto.setRequesterId(relationship.getRequester().getId().toString());
+//        dto.setRequesterName(relationship.getRequester().getName());
+//        dto.setRequesterEmail(relationship.getRequester().getEmail());
+//        dto.setTargetId(relationship.getTarget().getId().toString());
+//        dto.setTargetName(relationship.getTarget().getName());
+//        dto.setTargetEmail(relationship.getTarget().getEmail());
+//        dto.setStatus(relationship.getStatus());
+//        dto.setCreatedAt(relationship.getCreatedAt().format(formatter));
+//        return dto;
+//    }
 }

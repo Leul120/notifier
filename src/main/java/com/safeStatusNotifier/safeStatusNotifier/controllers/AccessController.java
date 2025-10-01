@@ -1,19 +1,26 @@
 package com.safeStatusNotifier.safeStatusNotifier.controllers;
 
 
+import com.safeStatusNotifier.safeStatusNotifier.entity.AccessRelationship;
+import com.safeStatusNotifier.safeStatusNotifier.entity.User;
 import com.safeStatusNotifier.safeStatusNotifier.requests.AccessRelationshipDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.AccessResponse;
 import com.safeStatusNotifier.safeStatusNotifier.requests.GrantAccessRequest;
 import com.safeStatusNotifier.safeStatusNotifier.requests.UserDto;
 import com.safeStatusNotifier.safeStatusNotifier.services.AccessService;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/access")
+//@RestController
+//@RequestMapping("/api/access")
+@Controller
 public class AccessController {
 
     private final AccessService accessService;
@@ -22,38 +29,44 @@ public class AccessController {
         this.accessService = accessService;
     }
 
-    @GetMapping("/monitoring-me")
-    public ResponseEntity<List<UserDto>> getUsersMonitoringMe() {
-        return ResponseEntity.ok(accessService.getUsersMonitoringMe());
+    @QueryMapping
+    public List<User> usersMonitoringMe() {
+        return accessService.getUsersMonitoringMe();
     }
 
-    @GetMapping("/monitored-by-me")
-    public ResponseEntity<List<UserDto>> getMonitoredUsers() {
-        return ResponseEntity.ok(accessService.getMonitoredUsers());
+    @QueryMapping
+    public List<User> monitoredUsers() {
+        return accessService.getMonitoredUsers();
     }
 
-    @GetMapping("/requests")
-    public ResponseEntity<List<AccessRelationshipDto>> getAccessRequests() {
-        return ResponseEntity.ok(accessService.getAccessRequests());
+    @QueryMapping
+    public List<AccessRelationship> accessRequests() {
+        return accessService.getAccessRequests();
     }
 
-    @PostMapping("/grant")
-    public ResponseEntity<AccessResponse> grantAccess(@RequestBody GrantAccessRequest request) {
-        return ResponseEntity.ok(accessService.grantAccess(request));
+    @MutationMapping
+    public AccessRelationship grantAccess(@Argument GrantAccessRequest input) {
+        System.out.println("input "+input);
+
+        GrantAccessRequest request = new GrantAccessRequest();
+        request.setEmail(input.getEmail());
+        System.out.println("req "+request);
+        return accessService.grantAccess(request);
     }
 
-    @PostMapping("/requests/{requestId}/approve")
-    public ResponseEntity<AccessResponse> approveAccessRequest(@PathVariable UUID requestId) {
-        return ResponseEntity.ok(accessService.approveAccessRequest(requestId));
+    @MutationMapping
+    public AccessRelationship approveAccessRequest(@Argument String id) {
+        return accessService.approveAccessRequest(UUID.fromString(id));
     }
 
-    @PostMapping("/requests/{requestId}/deny")
-    public ResponseEntity<AccessResponse> denyAccessRequest(@PathVariable UUID requestId) {
-        return ResponseEntity.ok(accessService.denyAccessRequest(requestId));
+    @MutationMapping
+    public AccessRelationship denyAccessRequest(@Argument String id) {
+        return accessService.denyAccessRequest(UUID.fromString(id));
     }
 
-    @DeleteMapping("/revoke/{userId}")
-    public ResponseEntity<AccessResponse> revokeAccess(@PathVariable UUID userId) {
-        return ResponseEntity.ok(accessService.revokeAccess(userId));
+    @MutationMapping
+    public Boolean revokeAccess(@Argument String id) {
+        accessService.revokeAccess(UUID.fromString(id));
+        return true;
     }
 }

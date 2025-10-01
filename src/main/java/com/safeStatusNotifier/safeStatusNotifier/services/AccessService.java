@@ -1,19 +1,19 @@
 package com.safeStatusNotifier.safeStatusNotifier.services;
 
-import com.safeStatusNotifier.safeStatusNotifier.requests.AccessRelationshipDto;
+import com.safeStatusNotifier.safeStatusNotifier.entity.AccessRelationship;
+import com.safeStatusNotifier.safeStatusNotifier.entity.User;
 import com.safeStatusNotifier.safeStatusNotifier.requests.AccessResponse;
 import com.safeStatusNotifier.safeStatusNotifier.requests.GrantAccessRequest;
-import com.safeStatusNotifier.safeStatusNotifier.requests.UserDto;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface AccessService {
-    AccessResponse denyAccessRequest(UUID requestId);
-    AccessResponse approveAccessRequest(UUID requestId);
-    AccessResponse grantAccess(GrantAccessRequest request);
-    List<AccessRelationshipDto> getAccessRequests();
-    List<UserDto> getMonitoredUsers();
-    List<UserDto> getUsersMonitoringMe();
-    AccessResponse revokeAccess(UUID userId);
+    AccessRelationship denyAccessRequest(UUID requestId);
+    AccessRelationship approveAccessRequest(UUID requestId);
+    AccessRelationship grantAccess(GrantAccessRequest request);
+    List<AccessRelationship> getAccessRequests();
+    List<User> getMonitoredUsers();
+    List<User> getUsersMonitoringMe();
+    AccessRelationship revokeAccess(UUID userId);
 }

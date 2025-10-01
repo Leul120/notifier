@@ -33,17 +33,17 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         this.notificationService = notificationService;
     }
     @Override
-    public DeviceStatusDto getUserDeviceStatus(UUID userId) {
+    public DeviceStatus getUserDeviceStatus(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        DeviceStatus status = deviceStatusRepository.findTopByUserOrderByLastSeenDesc(user)
+        return deviceStatusRepository.findTopByUserOrderByLastSeenDesc(user)
                 .orElseThrow(() -> new RuntimeException("Device status not found"));
 
-        return mapToDto(status);
+
     }
     @Override
-    public DeviceStatusDto updateDeviceStatus(DeviceStatusUpdateRequest request) {
+    public DeviceStatus updateDeviceStatus(DeviceStatusUpdateRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -60,7 +60,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         // Create notifications based on device status
         createStatusNotifications(user, savedStatus);
 
-        return mapToDto(savedStatus);
+        return savedStatus;
     }
 
     private void createStatusNotifications(User user, DeviceStatus status) {
@@ -85,13 +85,13 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         }
     }
 
-    private DeviceStatusDto mapToDto(DeviceStatus status) {
-        DeviceStatusDto dto = new DeviceStatusDto();
-        dto.setUserId(status.getUser().getId().toString());
-        dto.setOnline(status.isOnline());
-        dto.setBatteryLevel(status.getBatteryLevel());
-        dto.setNetworkType(status.getNetworkType());
-        dto.setLastSeen(status.getLastSeen().format(formatter));
-        return dto;
-    }
+//    private DeviceStatusDto mapToDto(DeviceStatus status) {
+//        DeviceStatusDto dto = new DeviceStatusDto();
+//        dto.setUserId(status.getUser().getId().toString());
+//        dto.setOnline(status.isOnline());
+//        dto.setBatteryLevel(status.getBatteryLevel());
+//        dto.setNetworkType(status.getNetworkType());
+//        dto.setLastSeen(status.getLastSeen().format(formatter));
+//        return dto;
+//    }
 }
