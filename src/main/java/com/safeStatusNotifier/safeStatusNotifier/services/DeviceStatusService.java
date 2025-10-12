@@ -10,5 +10,5 @@ import java.util.UUID;
 
 public interface DeviceStatusService {
     DeviceStatusDto getUserDeviceStatus(UUID userId);
-    WebSocketResponse updateDeviceStatus(DeviceStatusUpdateRequest request);
+    WebSocketResponse updateDeviceStatus(DeviceStatusUpdateRequest request,String email);
 }

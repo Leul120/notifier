@@ -44,8 +44,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         return mapToDto(status);
     }
     @Override
-    public WebSocketResponse updateDeviceStatus(DeviceStatusUpdateRequest request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    public WebSocketResponse updateDeviceStatus(DeviceStatusUpdateRequest request,String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

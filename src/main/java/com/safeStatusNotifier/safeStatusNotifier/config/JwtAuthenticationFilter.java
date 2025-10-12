@@ -1,6 +1,8 @@
 package com.safeStatusNotifier.safeStatusNotifier.config;
 
 
+import com.safeStatusNotifier.safeStatusNotifier.entity.User;
+import com.safeStatusNotifier.safeStatusNotifier.repositories.UserRepository;
 import com.safeStatusNotifier.safeStatusNotifier.services.JwtService;
 import com.safeStatusNotifier.safeStatusNotifier.services.UserService;
 import io.micrometer.common.util.StringUtils;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -22,17 +23,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public final JwtService jwtService;
     private final UserService userService;
-
-    @Autowired
-    public JwtAuthenticationFilter(UserService userService,JwtService jwtService){
-        this.jwtService=jwtService;
-
-        this.userService=userService;
-    }
+    private final UserRepository userRepository;
+//    @Autowired
+//    public JwtAuthenticationFilter(UserService userService,JwtService jwtService){
+//        this.jwtService=jwtService;
+//
+//        this.userService=userService;
+//    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader=request.getHeader("Authorization");
@@ -57,8 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
-
-
+                User user = userRepository.findByEmail(userDetails.getUsername())
+                        .orElseThrow(() -> new RuntimeException("User not Found!"));
+                request.setAttribute("userEmail",user.getEmail());
 
             }
 

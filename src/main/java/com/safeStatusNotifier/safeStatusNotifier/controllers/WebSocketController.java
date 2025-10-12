@@ -2,12 +2,14 @@ package com.safeStatusNotifier.safeStatusNotifier.controllers;
 
 
 import com.safeStatusNotifier.safeStatusNotifier.entity.User;
+import com.safeStatusNotifier.safeStatusNotifier.repositories.UserRepository;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusUpdateRequest;
 import com.safeStatusNotifier.safeStatusNotifier.requests.UserDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.WebSocketResponse;
 import com.safeStatusNotifier.safeStatusNotifier.services.AccessService;
 import com.safeStatusNotifier.safeStatusNotifier.services.DeviceStatusService;
+import com.safeStatusNotifier.safeStatusNotifier.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class WebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final AccessService accessService;
     private final DeviceStatusService deviceStatusService;
+    private final UserRepository userRepository;
 
 
 
@@ -40,12 +43,13 @@ public class WebSocketController {
         System.out.println("status "+status);
 
 
+
         // Send message to the specific user
-        WebSocketResponse webSocketResponse=deviceStatusService.updateDeviceStatus(status);
+        WebSocketResponse webSocketResponse=deviceStatusService.updateDeviceStatus(status,senderEmail);
         List<UserDto> users=accessService.getUsersMonitoringMe();
-        for (UserDto user:users) {
+        for (UserDto user1:users) {
             messagingTemplate.convertAndSendToUser(
-                    user.getId(), "/queue/status", webSocketResponse);
+                    user1.getId(), "/queue/status", webSocketResponse);
         }
     }
 

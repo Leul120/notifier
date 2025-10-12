@@ -25,7 +25,7 @@ public class DeviceStatusController {
     }
 
     @PostMapping("/device-status")
-    public ResponseEntity<DeviceStatus> updateDeviceStatus(@RequestBody DeviceStatusUpdateRequest request) {
-        return ResponseEntity.ok(deviceStatusService.updateDeviceStatus(request).getDeviceStatus());
+    public ResponseEntity<DeviceStatus> updateDeviceStatus(@RequestAttribute("userEmail") String userEmail,@RequestBody DeviceStatusUpdateRequest request) {
+        return ResponseEntity.ok(deviceStatusService.updateDeviceStatus(request,userEmail).getDeviceStatus());
     }
 }
