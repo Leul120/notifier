@@ -19,8 +19,7 @@ public class StatusNotification {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne()
     private User user;
 
     @Column(nullable = false)

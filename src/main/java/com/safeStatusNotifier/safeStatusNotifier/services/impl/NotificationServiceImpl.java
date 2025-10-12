@@ -49,7 +49,6 @@ public class NotificationServiceImpl implements NotificationService {
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Current user not found"));
 
-        // This would need to be expanded with proper access control logic
 
         List<StatusNotification> notifications = notificationRepository.findByUserOrderByTimestampDesc(user);
 

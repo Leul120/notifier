@@ -20,7 +20,6 @@ public class DeviceStatus {
     private UUID id;
 
     @ManyToOne()
-    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)

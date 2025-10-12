@@ -32,13 +32,6 @@ public class User implements UserDetails{
 
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DeviceStatus> deviceStatuses = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<StatusNotification> notifications = new HashSet<>();
-
-
     @Override
     public String getUsername() {
         return email;
