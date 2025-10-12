@@ -13,6 +13,7 @@ import com.safeStatusNotifier.safeStatusNotifier.services.AccessService;
 import com.safeStatusNotifier.safeStatusNotifier.services.NotificationService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +37,7 @@ public class AccessServiceImpl implements AccessService {
         this.notificationService = notificationService;
     }
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getUsersMonitoringMe() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(email)
