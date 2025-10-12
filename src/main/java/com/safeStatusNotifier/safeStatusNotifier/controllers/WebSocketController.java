@@ -5,6 +5,7 @@ import com.safeStatusNotifier.safeStatusNotifier.entity.User;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusUpdateRequest;
 import com.safeStatusNotifier.safeStatusNotifier.requests.UserDto;
+import com.safeStatusNotifier.safeStatusNotifier.requests.WebSocketResponse;
 import com.safeStatusNotifier.safeStatusNotifier.services.AccessService;
 import com.safeStatusNotifier.safeStatusNotifier.services.DeviceStatusService;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +40,11 @@ public class WebSocketController {
 
 
         // Send message to the specific user
-        DeviceStatusDto dto=deviceStatusService.updateDeviceStatus(status);
+        WebSocketResponse webSocketResponse=deviceStatusService.updateDeviceStatus(status);
         List<UserDto> users=accessService.getUsersMonitoringMe();
         for (UserDto user:users) {
             messagingTemplate.convertAndSendToUser(
-                    user.getId(), "/queue/statuses", dto);
+                    user.getId(), "/queue/status", webSocketResponse);
         }
     }
 

@@ -57,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .collect(Collectors.toList());
     }
     @Override
-    public void createNotification(User user, String title, String message, StatusNotification.NotificationType type) {
+    public StatusNotification createNotification(User user, String title, String message, StatusNotification.NotificationType type) {
         StatusNotification notification = new StatusNotification();
         notification.setUser(user);
         notification.setTitle(title);
@@ -66,7 +66,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
 
-        notificationRepository.save(notification);
+        return notificationRepository.save(notification);
     }
 
     private StatusNotificationDto mapToDto(StatusNotification notification) {

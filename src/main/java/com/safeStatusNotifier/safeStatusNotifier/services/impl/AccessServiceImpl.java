@@ -78,6 +78,9 @@ public class AccessServiceImpl implements AccessService {
     @Override
     public AccessResponse grantAccess(GrantAccessRequest request) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (request.getEmail().equals(currentUserEmail)){
+            throw new RuntimeException("You can't monitor your device!");
+        }
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Current user not found"));
 

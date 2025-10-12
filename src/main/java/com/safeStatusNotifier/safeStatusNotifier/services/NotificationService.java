@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface NotificationService {
-    void createNotification(User user, String title, String message, StatusNotification.NotificationType type);
+    StatusNotification createNotification(User user, String title, String message, StatusNotification.NotificationType type);
     List<StatusNotificationDto> getNotificationsForUser(UUID userId);
     List<StatusNotificationDto> getNotificationsForCurrentUser();
 }

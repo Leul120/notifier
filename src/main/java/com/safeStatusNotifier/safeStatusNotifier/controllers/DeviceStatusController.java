@@ -1,5 +1,6 @@
 package com.safeStatusNotifier.safeStatusNotifier.controllers;
 
+import com.safeStatusNotifier.safeStatusNotifier.entity.DeviceStatus;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusUpdateRequest;
 import com.safeStatusNotifier.safeStatusNotifier.services.DeviceStatusService;
@@ -24,7 +25,7 @@ public class DeviceStatusController {
     }
 
     @PostMapping("/device-status")
-    public ResponseEntity<DeviceStatusDto> updateDeviceStatus(@RequestBody DeviceStatusUpdateRequest request) {
-        return ResponseEntity.ok(deviceStatusService.updateDeviceStatus(request));
+    public ResponseEntity<DeviceStatus> updateDeviceStatus(@RequestBody DeviceStatusUpdateRequest request) {
+        return ResponseEntity.ok(deviceStatusService.updateDeviceStatus(request).getDeviceStatus());
     }
 }

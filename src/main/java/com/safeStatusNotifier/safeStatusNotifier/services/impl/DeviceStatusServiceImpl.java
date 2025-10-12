@@ -8,6 +8,7 @@ import com.safeStatusNotifier.safeStatusNotifier.repositories.DeviceStatusReposi
 import com.safeStatusNotifier.safeStatusNotifier.repositories.UserRepository;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusDto;
 import com.safeStatusNotifier.safeStatusNotifier.requests.DeviceStatusUpdateRequest;
+import com.safeStatusNotifier.safeStatusNotifier.requests.WebSocketResponse;
 import com.safeStatusNotifier.safeStatusNotifier.services.DeviceStatusService;
 import com.safeStatusNotifier.safeStatusNotifier.services.NotificationService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DeviceStatusServiceImpl implements DeviceStatusService {
@@ -43,7 +44,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         return mapToDto(status);
     }
     @Override
-    public DeviceStatusDto updateDeviceStatus(DeviceStatusUpdateRequest request) {
+    public WebSocketResponse updateDeviceStatus(DeviceStatusUpdateRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,31 +59,33 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         DeviceStatus savedStatus = deviceStatusRepository.save(status);
 
         // Create notifications based on device status
-        createStatusNotifications(user, savedStatus);
+        List<StatusNotification> notifications=createStatusNotifications(user, savedStatus);
 
-        return mapToDto(savedStatus);
+        return WebSocketResponse.builder().deviceStatus(savedStatus).notifications(notifications).build();
     }
 
-    private void createStatusNotifications(User user, DeviceStatus status) {
+    private List<StatusNotification> createStatusNotifications(User user, DeviceStatus status) {
         // Battery low notification
+        List<StatusNotification> notifications= new ArrayList<>();
         if (status.getBatteryLevel() <= 20) {
-            notificationService.createNotification(
+            notifications.add(notificationService.createNotification(
                     user,
                     "Low Battery",
                     "Your device battery is at " + status.getBatteryLevel() + "%",
                     StatusNotification.NotificationType.WARNING
-            );
+            ));
         }
 
         // Network change notification
         if (status.getNetworkType().equals("Mobile Data")) {
-            notificationService.createNotification(
+            notifications.add(notificationService.createNotification(
                     user,
                     "Network Change",
                     "Your device is now using mobile data",
                     StatusNotification.NotificationType.INFO
-            );
+            ));
         }
+        return notifications;
     }
 
     private DeviceStatusDto mapToDto(DeviceStatus status) {
