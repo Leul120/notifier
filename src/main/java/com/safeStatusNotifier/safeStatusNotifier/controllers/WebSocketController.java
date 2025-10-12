@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -33,10 +34,10 @@ public class WebSocketController {
 
     @MessageMapping("/chat.privateMessage")
     @Transactional
-    public void sendDeviceStatus(DeviceStatusUpdateRequest status, StompHeaderAccessor headerAccessor) {
-//        String sender=(String) headerAccessor.getSessionAttributes().get("username");
-        System.out.println("sender"+status);
-////        message.setSender(sender);
+    public void sendDeviceStatus(DeviceStatusUpdateRequest status, Principal principal) {
+        String senderEmail = principal.getName();
+        System.out.println("Sender: " + senderEmail);
+        System.out.println("status "+status);
 
 
         // Send message to the specific user
