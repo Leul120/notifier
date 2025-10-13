@@ -40,15 +40,17 @@ public class WebSocketController {
     public void sendDeviceStatus(DeviceStatusUpdateRequest status, Principal principal) {
         String senderEmail = principal.getName();
         System.out.println("Sender: " + senderEmail);
-        System.out.println("status "+status);
 
+        WebSocketResponse webSocketResponse = deviceStatusService.updateDeviceStatus(status, senderEmail);
 
+        List<UserDto> users = accessService.getUsersMonitoringMe(senderEmail);
+        System.out.println("Users to notify: " + users.size());
 
-        // Send message to the specific user
-        WebSocketResponse webSocketResponse=deviceStatusService.updateDeviceStatus(status,senderEmail);
-        System.out.println("websocket response "+webSocketResponse);
-        List<UserDto> users=accessService.getUsersMonitoringMe(senderEmail);
-        for (UserDto user1:users) {
+        for (UserDto user1: users) {
+            String destination = "/user/" + user1.getId() + "/queue/status";
+            System.out.println("Sending to: " + destination);
+            System.out.println("Message: " + webSocketResponse);
+
             messagingTemplate.convertAndSendToUser(
                     user1.getId(), "/queue/status", webSocketResponse);
         }
