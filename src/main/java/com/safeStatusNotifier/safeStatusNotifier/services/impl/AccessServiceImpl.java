@@ -38,8 +38,7 @@ public class AccessServiceImpl implements AccessService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getUsersMonitoringMe() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    public List<UserDto> getUsersMonitoringMe(String email) {
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

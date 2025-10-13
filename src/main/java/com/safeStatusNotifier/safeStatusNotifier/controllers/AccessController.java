@@ -23,8 +23,8 @@ public class AccessController {
     }
 
     @GetMapping("/monitoring-me")
-    public ResponseEntity<List<UserDto>> getUsersMonitoringMe() {
-        return ResponseEntity.ok(accessService.getUsersMonitoringMe());
+    public ResponseEntity<List<UserDto>> getUsersMonitoringMe(@RequestAttribute("userEmail") String userEmail) {
+        return ResponseEntity.ok(accessService.getUsersMonitoringMe(userEmail));
     }
 
     @GetMapping("/monitored-by-me")

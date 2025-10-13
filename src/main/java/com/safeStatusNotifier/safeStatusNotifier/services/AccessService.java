@@ -14,6 +14,6 @@ public interface AccessService {
     AccessResponse grantAccess(GrantAccessRequest request);
     List<AccessRelationshipDto> getAccessRequests();
     List<UserDto> getMonitoredUsers();
-    List<UserDto> getUsersMonitoringMe();
+    List<UserDto> getUsersMonitoringMe(String email);
     AccessResponse revokeAccess(UUID userId);
 }
