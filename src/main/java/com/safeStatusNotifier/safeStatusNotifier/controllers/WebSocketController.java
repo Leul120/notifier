@@ -46,6 +46,7 @@ public class WebSocketController {
 
         // Send message to the specific user
         WebSocketResponse webSocketResponse=deviceStatusService.updateDeviceStatus(status,senderEmail);
+        System.out.println("websocket response "+webSocketResponse);
         List<UserDto> users=accessService.getUsersMonitoringMe(senderEmail);
         for (UserDto user1:users) {
             messagingTemplate.convertAndSendToUser(

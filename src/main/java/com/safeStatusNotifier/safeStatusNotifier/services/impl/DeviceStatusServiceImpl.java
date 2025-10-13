@@ -59,8 +59,8 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
         // Create notifications based on device status
         List<StatusNotification> notifications=createStatusNotifications(user, savedStatus);
+        return new WebSocketResponse(savedStatus,notifications);
 
-        return WebSocketResponse.builder().deviceStatus(savedStatus).notifications(notifications).build();
     }
 
     private List<StatusNotification> createStatusNotifications(User user, DeviceStatus status) {
